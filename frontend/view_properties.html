@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Properties</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="d-flex">
+  <!-- Sidebar -->
+  <div class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+    <h5 class="text-center mb-4">SmartRent</h5>
+    <ul class="nav flex-column">
+      <!-- PROPERTY -->
+      <li class="nav-item">
+        <a class="nav-link text-white" data-bs-toggle="collapse" href="#propertyMenu" role="button" aria-expanded="true" aria-controls="propertyMenu">
+          PROPERTY
+        </a>
+        <div class="collapse show ms-3" id="propertyMenu">
+          <a class="nav-link text-white" href="view_properties.html">View Properties</a>
+          <a class="nav-link text-white" href="add_property.html">Add Property</a>
+        </div>
+      </li>
+
+      <!-- ROOM -->
+      <li class="nav-item">
+        <a class="nav-link text-white" data-bs-toggle="collapse" href="#roomMenu" role="button" aria-expanded="false" aria-controls="roomMenu">
+          ROOM
+        </a>
+        <div class="collapse ms-3" id="roomMenu">
+          <a class="nav-link text-white" href="view_rooms.html">View Rooms</a>
+          <a class="nav-link text-white" href="add_room.html">Add Room</a>
+        </div>
+      </li>
+
+      <!-- EXPENSE -->
+      <li class="nav-item">
+        <a class="nav-link text-white" data-bs-toggle="collapse" href="#expenseMenu" role="button" aria-expanded="false" aria-controls="expenseMenu">
+          EXPENSE
+        </a>
+        <div class="collapse ms-3" id="expenseMenu">
+          <a class="nav-link text-white" href="search_expense.html">Search Expense</a>
+          <a class="nav-link text-white" href="add_expense.html">Add Expense</a>
+        </div>
+      </li>
+
+      <!-- NOTIFICATION -->
+      <li class="nav-item">
+        <a class="nav-link text-white" data-bs-toggle="collapse" href="#notificationMenu" role="button" aria-expanded="false" aria-controls="notificationMenu">
+          NOTIFICATION
+        </a>
+        <div class="collapse ms-3" id="notificationMenu">
+          <a class="nav-link text-white" href="view_notification.html">View Notification</a>
+          <a class="nav-link text-white" href="add_notification.html">Add Notification</a>
+        </div>
+      </li>
+
+      <!-- MAINTENANCE REQUEST -->
+      <li class="nav-item">
+        <a class="nav-link text-white" href="maintenance.html">MAINTENANCE REQUEST</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>WELCOME, XXX</h2>
+      <div>
+        <button class="btn btn-outline-primary me-2">USER INFO</button>
+        <button class="btn btn-outline-danger">LOG OUT</button>
+      </div>
+    </div>
+
+    <h3 class="mb-4">Manage Properties</h3>
+
+    <table class="table table-bordered text-center align-middle">
+      <thead class="table-secondary">
+        <tr>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Size</th>
+          <th>Address</th>
+          <th>Status<br>(Rooms Left)</th>
+          <th>Shared Laundry</th>
+          <th>Shared Fridge</th>
+          <th>Shared TV</th>
+          <th>Shared Wifi</th>
+          <th>View Rooms</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Property 1 -->
+        <tr>
+          <td>P01</td>
+          <td>Apartment</td>
+          <td>45m²</td>
+          <td>台北市信義路五段88號</td>
+          <td>2</td>
+          <td>✔</td>
+          <td>✔</td>
+          <td>✖</td>
+          <td>✔</td>
+          <td><button class="btn btn-sm btn-info" onclick="location.href='view_rooms_by_property.html?property_id=P01'">View Rooms</button></td>
+          <td>
+            <button class="btn btn-sm btn-warning" onclick="location.href='edit_property.html?property_id=P01'">Edit</button>
+            <button class="btn btn-sm btn-danger mt-2" onclick="deleteProperty('P01')">Delete</button>
+          </td>
+        </tr>
+
+        <!-- Property 2 -->
+        <tr>
+          <td>P02</td>
+          <td>Apartment</td>
+          <td>20m²</td>
+          <td>台北市文山區政大路五段2號</td>
+          <td>1</td>
+          <td>✖</td>
+          <td>✖</td>
+          <td>✖</td>
+          <td>✔</td>
+          <td><button class="btn btn-sm btn-info" onclick="location.href='view_rooms_by_property.html?property_id=P01'">View Rooms</button>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-warning" onclick="location.href='edit_property.html?property_id=P02'">Edit</button>
+            <button class="btn btn-sm btn-danger mt-2" onclick="deleteProperty('P02')">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- JavaScript for Delete -->
+<script>
+function deleteProperty(propertyId) {
+  if (confirm("Are you sure you want to delete Property " + propertyId + "?")) {
+    // 模擬刪除流程，可改成送出API請求
+    window.location.href = "/property/delete?property_id=" + propertyId;
+  }
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
