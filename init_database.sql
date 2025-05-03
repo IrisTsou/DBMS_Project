@@ -7,7 +7,7 @@ CREATE TABLE Landlord (
     landlord_name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     landlord_email VARCHAR(255) NOT NULL,
-    landlord_telephone INT
+    landlord_telephone VARCHAR(20)
 );
 
 -- Tenant table
@@ -16,7 +16,7 @@ CREATE TABLE Tenant (
     tenant_name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     tenant_email VARCHAR(255) NOT NULL,
-    tenant_telephone INT
+    tenant_telephone VARCHAR(20)
 );
 
 -- Property table
@@ -26,10 +26,10 @@ CREATE TABLE Property (
     type VARCHAR(255),
     address VARCHAR(255),
     status INT,
-    shared_Wifi TINYINT(1),
-    shared_laundry TINYINT(1),
-    shared_fridge TINYINT(1),
-    shared_TV TINYINT(1),
+    Has_Shared_Wifi TINYINT(1),
+    Has_Shared_laundry TINYINT(1),
+    Has_Shared_fridge TINYINT(1),
+    Has_Shared_TV TINYINT(1),
     landlord_ID INT,
     FOREIGN KEY (landlord_ID) REFERENCES Landlord(landlord_ID)
 );
@@ -58,7 +58,7 @@ CREATE TABLE Announcement (
     title VARCHAR(255),
     room_ID INT,
     date DATE,
-    content VARCHAR(255),
+    content TEXT,
     category VARCHAR(255),
     landlord_ID INT,
     FOREIGN KEY (room_ID) REFERENCES Room(room_ID),
@@ -71,7 +71,7 @@ CREATE TABLE Maintenance (
     item VARCHAR(255),
     description VARCHAR(255),
     date DATE,
-    status TINYINT(1),,
+    status TINYINT(1),
     room_ID INT,
     tenant_ID INT,
     FOREIGN KEY (room_ID) REFERENCES Room(room_ID),
@@ -80,10 +80,11 @@ CREATE TABLE Maintenance (
 
 -- Expense table
 CREATE TABLE Expense (
-    room_ID INT PRIMARY KEY,
+    room_ID INT,
     date DATE,
     electricity_fees INT,
     water_fees INT,
     rental_expense INT,
+    PRIMARY KEY (room_ID, date),
     FOREIGN KEY (room_ID) REFERENCES Room(room_ID)
 );
