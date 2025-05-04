@@ -71,7 +71,7 @@ CREATE TABLE Maintenance (
     item VARCHAR(255),
     description VARCHAR(255),
     date DATE,
-    status TINYINT(1),,
+    status TINYINT(1),
     room_ID INT,
     tenant_ID INT,
     FOREIGN KEY (room_ID) REFERENCES Room(room_ID),
