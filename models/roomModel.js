@@ -37,11 +37,13 @@ async function addRoom(roomData, propertyId, landlordId) {
       size,
       type,
       status,
+      rent_date,
       rent_price,
       individual_Wifi,
       individual_laundry,
       individual_fridge,
-      individual_TV
+      individual_TV,
+      tenant_ID
     } = roomData;
     // 驗證物業是否存在且屬於房東
     const [property] = await mysqlConnectionPool.query(
@@ -53,18 +55,20 @@ async function addRoom(roomData, propertyId, landlordId) {
     }
     const [result] = await mysqlConnectionPool.query(
       `INSERT INTO Room (
-        size, type, status, rent_price, individual_Wifi, individual_laundry, 
-        individual_fridge, individual_TV, property_ID
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        size, type, status, rent_date, rent_price, individual_Wifi, individual_laundry, 
+        individual_fridge, individual_TV, tenant_ID, property_ID
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         size,
         type,
         status,
+        rent_date,
         rent_price,
         individual_Wifi,
         individual_laundry,
         individual_fridge,
         individual_TV,
+        tenant_ID,
         propertyId
       ]
     );
@@ -81,28 +85,32 @@ async function updateRoom(roomId, roomData, landlordId) {
       size,
       type,
       status,
+      rent_date,
       rent_price,
       individual_Wifi,
       individual_laundry,
       individual_fridge,
-      individual_TV
+      individual_TV,
+      tenant_ID
     } = roomData;
     const [result] = await mysqlConnectionPool.query(
       `UPDATE Room r
        JOIN Property p ON r.property_ID = p.property_ID
-       SET r.size = ?, r.type = ?, r.status = ?, r.rent_price = ?, 
+       SET r.size = ?, r.type = ?, r.status = ?, r.rent_date = ?, r.rent_price = ?, 
            r.individual_Wifi = ?, r.individual_laundry = ?, 
-           r.individual_fridge = ?, r.individual_TV = ?
+           r.individual_fridge = ?, r.individual_TV = ?, r.tenant_ID = ?
        WHERE r.room_ID = ? AND p.landlord_ID = ?`,
       [
         size,
         type,
         status,
+        rent_date,
         rent_price,
         individual_Wifi,
         individual_laundry,
         individual_fridge,
         individual_TV,
+        tenant_ID,
         roomId,
         landlordId
       ]
@@ -134,15 +142,15 @@ async function deleteRoom(roomId, landlordId) {
   }
 }
 
-// 根據 room_ID 找到對應的 property 資訊
-async function getPropertyByRoomId(room_ID) {
+// 根據 room_ID 找到對應的 property 資訊（房東視角）
+async function getPropertyByRoomId(roomId, landlordId) {
   try {
     const [rows] = await mysqlConnectionPool.query(
       `SELECT Property.*
        FROM Room
        JOIN Property ON Room.property_ID = Property.property_ID
-       WHERE Room.room_ID = ?`,
-      [room_ID]
+       WHERE Room.room_ID = ? AND Property.landlord_ID = ?`,
+      [roomId, landlordId]
     );
     return rows[0];
   } catch (error) {
@@ -150,12 +158,45 @@ async function getPropertyByRoomId(room_ID) {
   }
 }
 
-// 匯出所有功能
+// 獲取房客租用的所有房間
+async function getRoomsByTenant(tenantId) {
+  try {
+    const [rows] = await mysqlConnectionPool.query(
+      `SELECT *
+       FROM Room
+       WHERE tenant_ID = ? AND status = 1`,
+      [tenantId]
+    );
+    return rows;
+  } catch (error) {
+    throw new Error(`Error fetching tenant's rooms: ${error.message}`);
+  }
+}
+
+// 獲取房客指定房間的物業資訊
+async function getPropertyByRoomIdForTenant(roomId, tenantId) {
+  try {
+    const [rows] = await mysqlConnectionPool.query(
+      `SELECT p.*
+       FROM Property p
+       JOIN Room r ON p.property_ID = r.property_ID
+       WHERE r.room_ID = ? AND r.tenant_ID = ? AND r.status = 1`,
+      [roomId, tenantId]
+    );
+    return rows[0];
+  } catch (error) {
+    throw new Error(`Error fetching property for tenant's room: ${error.message}`);
+  }
+}
+
 export {
-    getRoomsByProperty,
-    getRoomById,
-    addRoom,
-    updateRoom,
-    deleteRoom,
-    getPropertyByRoomId
-  };
+  addRoom,
+  deleteRoom,
+  getPropertyByRoomId,
+  getPropertyByRoomIdForTenant,
+  getRoomById,
+  getRoomsByProperty,
+  getRoomsByTenant,
+  updateRoom
+};
+
